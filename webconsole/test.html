@@ -15,10 +15,10 @@
     	$('body').terminal(function(command, term) {
     		if (command !== '') {
 	   			socket.emit('client_data', {'letter': command});
-	   			command = '';
     		}
    			
       		socket.on('out', function(data){
+      			console.log('response');
       			console.log(data.text);
         		term.echo(data.text);
       		});
