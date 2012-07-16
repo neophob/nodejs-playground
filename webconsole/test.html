@@ -22,13 +22,12 @@
 	  });
 
 
-    var socket = io.connect();
-    
-      		socket.on('out', function(data){
-      			console.log('response');
-      			console.log(data.text);
-        		termGlob.echo(data.text);
-      		});
+	  var socket = io.connect();    
+      socket.on('out', function(data){
+      		console.log('response');
+      		//console.log(data.text);
+        	termGlob.echo(data.text);
+      });
 	  
 	
     </script>

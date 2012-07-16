@@ -34,11 +34,14 @@ io.sockets.on('connection', function(socket){
 	    	//split up in arrays
 	    	var cmdarray = cmd.split(" ");
 	    	var process = cmdarray.shift(); // get first elemet from array (remove)
-			var subproc = spawn(process, cmdarray);
+			var subproc = spawn(process, cmdarray, 
+			{
+			   env: process.env,
+			   stdio: [ 'pipe', 'pipe', 'pipe' ]
+			 });			
 			
 			subproc.stdout.on('data', function(data) {
 				console.log('got stdout data');
-				//console.log(util.inspect(data));
 				socket.emit('out', {'text': data.toString() });
 			});
 
@@ -50,7 +53,8 @@ io.sockets.on('connection', function(socket){
 			subproc.on('exit', function(code) {
 		        if (code != 0) {
 		            console.log('Failed: ' + code);
-		        }				
+		        }
+//		        console.log(util.inspect(subproc));		
 			});
 	  			    	       				
     	}
