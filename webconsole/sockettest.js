@@ -1,6 +1,6 @@
 var http = require('http');
 var util = require('util');
-var exec = require("child_process").exec;
+var spawn = require("child_process").spawn;
 var static = require('node-static');
 
 var file = new(static.Server)('./');
@@ -30,22 +30,29 @@ io.sockets.on('connection', function(socket){
       var cmd = data.letter.replace (/^\s+/, '').replace (/\s+$/, '');
     	if (cmd !== '') {
 	    	console.log('execute <'+cmd+'>');
-			exec(cmd, function (error, stdout, stderr) {
-				var output = '';				
-				
-				if (stderr !== '') {
-					output = output+'\n'+stderr;
-				} else {
-          output = stdout;
-				}
-				
-	    		console.log('stdout: <'+output+'>');
-	    		socket.emit('out', {'text': output});
-	    		if (error !== null) {
-	    			console.log(stderr);
-//	    			socket.emit('out', {'text': stderr});
-	    		}	    		
-	  		});	    	       				
+	    	
+	    	//split up in arrays
+	    	var cmdarray = cmd.split(" ");
+	    	var process = cmdarray.shift(); // get first elemet from array (remove)
+			var subproc = spawn(process, cmdarray);
+			
+			subproc.stdout.on('data', function(data) {
+				console.log('got stdout data');
+				//console.log(util.inspect(data));
+				socket.emit('out', {'text': data.toString() });
+			});
+
+			subproc.stderr.on('data', function(data) {
+				console.log('got stderr data');
+				socket.emit('out', {'text': data.toString() });
+			});
+			
+			subproc.on('exit', function(code) {
+		        if (code != 0) {
+		            console.log('Failed: ' + code);
+		        }				
+			});
+	  			    	       				
     	}
     });
 });
