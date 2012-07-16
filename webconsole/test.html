@@ -9,22 +9,27 @@
   </head>
   <body>
     <script>    
-      var socket = io.connect();      
-              
+    var termGlob;
+            
 	  jQuery(document).ready(function(command, term) {
     	$('body').terminal(function(command, term) {
+    	  termGlob = term;
     		if (command !== '') {
 	   			socket.emit('client_data', {'letter': command});
     		}
-   			
+   			   			
+		}, { prompt: 'sh>', name: 'test', greetings: 'Javascript Interpreter', });				
+	  });
+
+
+    var socket = io.connect();
+    
       		socket.on('out', function(data){
       			console.log('response');
       			console.log(data.text);
-        		term.echo(data.text);
+        		termGlob.echo(data.text);
       		});
-   			
-		}, { prompt: 'sh>', name: 'test', greetings: 'Javascript Interpreter', });				
-	  });
+	  
 	
     </script>
 

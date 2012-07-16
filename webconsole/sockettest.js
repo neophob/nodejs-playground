@@ -26,13 +26,17 @@ io.sockets.on('connection', function(socket){
 
     //recieve client data
     socket.on('client_data', function(data){
-    	if (data.letter) {
-	    	console.log('execute <'+data.letter+'>');
-			exec(data.letter, function (error, stdout, stderr) {
-				var output = stdout;
+      //trim string
+      var cmd = data.letter.replace (/^\s+/, '').replace (/\s+$/, '');
+    	if (cmd !== '') {
+	    	console.log('execute <'+cmd+'>');
+			exec(cmd, function (error, stdout, stderr) {
+				var output = '';				
 				
 				if (stderr !== '') {
 					output = output+'\n'+stderr;
+				} else {
+          output = stdout;
 				}
 				
 	    		console.log('stdout: <'+output+'>');
