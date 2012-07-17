@@ -57,31 +57,30 @@
     <script src="js/jqconsole-2.7.min.js" type="text/javascript" charset="utf-8"></script>
     <script>
       $(function () {
-        var jqconsole = $('#console').jqconsole('Hi\n', '>>>');
+      	var currentDir = 'sh';
+        var jqconsole = $('#console').jqconsole('Webconsole\n', currentDir+'> ');
         var startPrompt = function () {
           // Start the prompt with history enabled.
           jqconsole.Prompt(true, function (input) {
-            // Output input with the class jqconsole-output.
-            //jqconsole.Write(input + '\n', 'jqconsole-output');
-                            		
+          	
+          	//send data out via websocket
             if (input !== '') {
 	   			socket.emit('client_data', {'letter': input});
     		}
-
             
             // Restart the prompt.
             startPrompt();
           });
         };
-        startPrompt();
+        startPrompt();        
         
-        
-      var socket = io.connect();    
-      socket.on('out', function(data){
-      		console.log('response');
-      		//console.log(data.text);
+        //recieve data from websocket
+ 	    var socket = io.connect();    
+     	socket.on('out', function(data){
+      		//console.log('response');
         	jqconsole.Write(data.text);
-      });
+        	currentDir = 'aaa';
+      	});
 
       });
     </script>

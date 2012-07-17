@@ -33,10 +33,11 @@ io.sockets.on('connection', function(socket){
 	    	
 	    	//split up in arrays
 	    	var cmdarray = cmd.split(" ");
-	    	var process = cmdarray.shift(); // get first elemet from array (remove)
-			var subproc = spawn(process, cmdarray, 
+	    	var cmd = cmdarray.shift(); // get first elemet from array (remove)
+			var subproc = spawn(cmd, cmdarray, 
 			{
 			   env: process.env,
+			   cwd: process.cwd,
 			   stdio: [ 'pipe', 'pipe', 'pipe' ]
 			 });			
 			
@@ -53,6 +54,28 @@ io.sockets.on('connection', function(socket){
 			subproc.on('exit', function(code) {
 		        if (code != 0) {
 		            console.log('Failed: ' + code);
+		        } else {
+		        	
+		        	//pretty ugly hack to change workign dir...
+		        	try {
+			        	var n=cmd.search('cd');
+			        	if (n>=0 && cmdarray.length>0) {
+			        		console.log('found cd command');
+		    	    		switch (cmdarray[0]) {
+		        				case '.': 	//nothing to do
+		        					break;	
+		        					
+		        				case '..': 
+		        					process.chdir(process.cwd()+'/..');	
+		        					break;
+		        				
+		        				default: 
+		        					process.chdir(cmdarray[0]);
+		        			}	
+		        		}
+		        	} catch (err) {
+		        		console.log('error while chdir: ' + err);	
+		        	}
 		        }
 //		        console.log(util.inspect(subproc));		
 			});
