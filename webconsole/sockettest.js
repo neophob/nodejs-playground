@@ -24,10 +24,13 @@ io.set('log level', 1);
 
 var pwd = '';
 var comspec,comspecParam;
+var connectedUser = 0;
 
 // define interactions with client
 io.sockets.on('connection', function(socket){   	   
-
+    connectedUser++;
+    console.log('user connected, connected users: '+connectedUser);    
+    
     //recieve client data
     socket.on('client_data', function(data){
       //trim string
@@ -86,10 +89,16 @@ io.sockets.on('connection', function(socket){
 		        }
 //		        console.log(util.inspect(subproc));		
 			});
-
+    }); //end client_data
+    
+    socket.on('disconnect', function () {
+      connectedUser--;
+      console.log('user disconnected, remaining clients: '+connectedUser);
+      
     });
 });
-console.log('Server started');
+  
+console.log('Server started on port '+port);
 
 var isRunningOnWindows = os.platform().search('win');
 if (isRunningOnWindows>=0) {
