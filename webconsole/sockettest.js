@@ -2,8 +2,10 @@ var http = require('http');
 var util = require('util');
 var spawn = require("child_process").spawn;
 var static = require('node-static');
+var os = require('os');
 
 var file = new(static.Server)('./');
+var port = process.env.PORT || 8001;
 var server = http.createServer(function(request, response){
 	request.addListener('end', function () {
         //
@@ -11,7 +13,7 @@ var server = http.createServer(function(request, response){
         //
         file.serve(request, response);
     });
-}).listen(8001);
+}).listen(port);
 
 
 // use socket.io
@@ -21,6 +23,8 @@ var io = require('socket.io').listen(server);
 io.set('log level', 1);
 
 var pwd = '';
+var comspec,comspecParam;
+
 // define interactions with client
 io.sockets.on('connection', function(socket){   	   
 
@@ -28,18 +32,21 @@ io.sockets.on('connection', function(socket){
     socket.on('client_data', function(data){
       //trim string
       var cmd = data.letter.replace (/^\s+/, '').replace (/\s+$/, '');
-    	if (cmd !== '') {
-	    	console.log('execute <'+cmd+'>');
+    	if (cmd === '') {
+        return;
+    	}
 	    	
-	    	//split up in arrays
-	    	var cmdarray = cmd.split(" ");
-	    	var cmd = cmdarray.shift(); // get first elemet from array (remove)
-			var subproc = spawn(cmd, cmdarray, 
-			{
-			   env: process.env,
-			   cwd: process.cwd,
-			   stdio: [ 'pipe', 'pipe', 'pipe' ]
-			 });			
+      //split up in arrays
+      var cmdarray = cmd.split(' ');
+      var cmd = cmdarray.shift(); // get first element from array (remove)
+      var args = [comspecParam, cmd].concat(cmdarray);
+        
+ 	    console.log('execute <'+comspec+'> args: '+util.inspect(args));
+      var subproc = spawn(comspec, args,
+      {
+			 env: process.env,
+			 cwd: process.cwd()
+      });			
 			
 			subproc.stdout.on('data', function(data) {
 				console.log('got stdout data');
@@ -79,8 +86,19 @@ io.sockets.on('connection', function(socket){
 		        }
 //		        console.log(util.inspect(subproc));		
 			});
-	  			    	       				
-    	}
+
     });
 });
 console.log('Server started');
+
+var isRunningOnWindows = os.platform().search('win');
+if (isRunningOnWindows>=0) {
+  comspec = 'cmd.exe';
+  comspecParam = '/c';
+  console.log('detected windows system');
+} else {
+  comspec = '/bin/bash';
+  comspecParam = '-c';
+  console.log('detected *nix system');  
+}
+
