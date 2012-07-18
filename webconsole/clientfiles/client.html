@@ -73,6 +73,11 @@
           });
         };
         startPrompt();        
+
+        // Ctrl+R: resets the console.
+        jqconsole.RegisterShortcut('R', function() {
+          this.Reset();
+        });
         
         //recieve data from websocket
  	    var socket = io.connect();    
