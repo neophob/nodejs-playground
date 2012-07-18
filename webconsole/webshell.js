@@ -100,7 +100,7 @@ io.sockets.on('connection', function(socket){
   
 console.log('Server started on port '+port);
 
-var isRunningOnWindows = os.platform().search('win');
+var isRunningOnWindows = os.platform().search('win32');
 if (isRunningOnWindows>=0) {
   comspec = 'cmd.exe';
   comspecParam = '/c';
