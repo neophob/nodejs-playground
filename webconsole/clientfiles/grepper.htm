@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <style>
+    html, body {
+      background-color: #333;
+      color: white;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+    }
+    /* The console container element */
+    #console {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color:black;
+    }
+    /* The inner console element. */
+    .jqconsole {
+        padding: 10px;
+    }
+    /* The cursor. */
+    .jqconsole-cursor {
+        background-color: gray;
+    }
+    /* The cursor color when the console looses focus. */
+    .jqconsole-blurred .jqconsole-cursor {
+        background-color: #666;
+    }
+    /* The current prompt text color */
+    .jqconsole-prompt {
+        color: #0d0;
+    }
+    /* The command history */
+    .jqconsole-old-prompt {
+        color: #0b0;
+        font-weight: normal;
+    }
+    /* The text color when in input mode. */
+    .jqconsole-input {
+        color: #dd0;
+    }
+    /* Previously entered input. */
+    .jqconsole-old-input {
+        color: #bb0;
+        font-weight: normal;
+    }
+    /* The text color of the output. */
+    .jqconsole-output {
+        color: white;
+    }
+    </style>
+  </head>
+    <div id="console"></div>
+    <script src="/socket.io/socket.io.js"></script>    
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/jqconsole-2.7.min.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      $(function () {
+        var jqconsole = $('#console').jqconsole('Webconsole\n', '');
+        
+        //recieve data from websocket
+ 	 var socket = io.connect();    
+     	 socket.on('out', function(data){
+      		//console.log('response');
+        	jqconsole.Write(data.text);
+      	});
+
+      });
+    </script>
+</html>

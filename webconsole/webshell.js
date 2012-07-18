@@ -4,7 +4,7 @@ var spawn = require("child_process").spawn;
 var static = require('node-static');
 var os = require('os');
 
-var file = new(static.Server)('./');
+var file = new(static.Server)('./clientfiles/');
 var port = process.env.PORT || 8001;
 var server = http.createServer(function(request, response){
 	request.addListener('end', function () {
@@ -41,8 +41,8 @@ io.sockets.on('connection', function(socket){
 	    	
       //split up in arrays
       var cmdarray = cmd.split(' ');
-      var cmd = cmdarray.shift(); // get first element from array (remove)
-      var args = [comspecParam, cmd].concat(cmdarray);
+      var prog = cmdarray.shift(); // get first element from array (remove)
+      var args = [comspecParam, cmd];
         
  	    console.log('execute <'+comspec+'> args: '+util.inspect(args));
       var subproc = spawn(comspec, args,
@@ -68,7 +68,7 @@ io.sockets.on('connection', function(socket){
 		        	
 		        	//pretty ugly hack to change workign dir...
 		        	try {
-			        	var n=cmd.search('cd');
+			        	var n=prog.search('cd');
 			        	if (n>=0 && cmdarray.length>0) {
 			        		console.log('found cd command');
 		    	    		switch (cmdarray[0]) {
