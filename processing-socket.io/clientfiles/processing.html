@@ -11,34 +11,60 @@
 
 // Simple way to attach js code to the canvas is by using a function
 function sketchProc(processing) {
-    var x;
-    var y;
     var col;
+    var history;
+
+    var font;
+
+    var MAX_VALUES = 20;
+    var BAR_X_SIZE = 40;
+    var BAR_Y_SIZE = 300;
 
     //get data from socket.io
     var socket = io.connect();
     socket.on('bang', function (data) {
-        console.log(data.x+"/"+data.y);
-        x = data.x;
-        y = data.y;
+        console.log(data.temp);
+
+        for (var i = 1; i < history.length; i++) {
+          history[i-1] = history[i];
+        }
+
+        history[MAX_VALUES-1] = data.temp*BAR_Y_SIZE;
     });
 
     processing.setup = function() {
       // erase background
-      processing.size(800, 400);
-      processing.background(0);
-      col = processing.color(64, 64, 0, 64);
+      processing.size(800, 400);      
+      col = processing.color(255, 255, 0);
+
+      font = processing.loadFont("Thonburi.ttf"); 
+      processing.textFont(font); 
+
+      history = new Array(MAX_VALUES);
+      for (var i = 0; i < history.length; i++) {
+        history[i] = 0;
+      }
     }
 
     // Override draw function, by default it will be called 60 times per second
     processing.draw = function() {
       // determine center and max clock arm length
       //var centerX = processing.width / 2, centerY = processing.height / 2;
+      processing.background(0);
 
       processing.fill(col);
       processing.noStroke();
 
-      processing.rect(x*processing.width , y*processing.height, 20, 20);
+      var xofs=0;
+      for (var i = 0; i < history.length; i++) {
+        processing.rect(xofs, 310, BAR_X_SIZE-1, 0-history[i]);
+
+        var ii=parseInt(history[i]/10);
+        processing.text(""+ii, xofs, 320);
+
+        xofs += BAR_X_SIZE;
+      }
+
     }; 
 }
 

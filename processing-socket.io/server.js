@@ -28,8 +28,8 @@ io.sockets.on('connection', function(socket){
 
 	setInterval(function() {
 	    console.log('send new trigger');
-	    socket.emit('bang', {'x': Math.random(), 'y': Math.random() });	
-	}, 100 );
+	    socket.emit('bang', {'temp': Math.random() });	
+	}, 1000 );
 
 	socket.on('disconnect', function () {
 		console.log('disconnected');
