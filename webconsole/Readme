@@ -1,3 +1,9 @@
-needed modules
 
-node-static, socket.io
+grepper.js:
+the server execute a "tail -f FILE" and push the content via socket.io to the client
+
+webshell.js:
+a simple webshell, execute shell commands from your webbrowser. 
+TODO: clean directory changes, handle stdin (execute nano for example)
+
+needed modules: node-static, socket.io

@@ -1,4 +1,4 @@
-var GREPFILE = '/data/log/nas-core/info.log';
+var GREPFILE = '/var/log/system.log';
 
 var http = require('http');
 var util = require('util');
