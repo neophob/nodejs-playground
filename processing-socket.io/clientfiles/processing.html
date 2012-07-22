@@ -38,7 +38,8 @@ function sketchProc(processing) {
       col = processing.color(255, 255, 0);
 
       font = processing.loadFont("Thonburi.ttf"); 
-      processing.textFont(font); 
+      processing.textFont(font, 16); 
+      processing.textAlign(processing.CENTER);
 
       history = new Array(MAX_VALUES);
       for (var i = 0; i < history.length; i++) {
@@ -60,7 +61,7 @@ function sketchProc(processing) {
         processing.rect(xofs, 310, BAR_X_SIZE-1, 0-history[i]);
 
         var ii=parseInt(history[i]/10);
-        processing.text(""+ii, xofs, 320);
+        processing.text(""+ii, xofs, 320, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
       }
