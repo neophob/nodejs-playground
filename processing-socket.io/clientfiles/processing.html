@@ -1,11 +1,66 @@
+<!DOCTYPE HTML>
 <html>
 <head>
   <script src="js/processing.js"></script>
   <script src="/socket.io/socket.io.js"></script> 
-</head>
-<body><h1>Processing.js</h1>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">
+  
+  <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+  </style>  
 
-<p><canvas id="canvas1" width="800" height="400"></canvas></p>
+</head>
+<body>
+
+<!-- Bootstrap Header Bar -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Neophob.com</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <!-- <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li> -->
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- Bootstrap content -->
+    <div class="container">
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Node.js, Socket.io... </h1>
+        <p>... Twitter Bootstrap and Processing.js example project. The Node.js server application
+          sends data via Socket.io to the Client. The Client HTML code use Twitter Bootstrap to
+          render the basic site layout, the main content is created by Processing.js.</p>
+        <!-- <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p> -->
+        <p><center><canvas id="canvas1" width="800" height="400"></canvas></center></p>
+
+        <blockquote>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis.</p>
+          <small>Someone famous</small>
+        </blockquote>
+      </div>
+
+      <footer>
+        <p>&copy; Michael Vogt 2012, Built for and maintained by the community via <a href="https://github.com/neophob">GitHub</a>.</p>
+      </footer>
+    
+    </div>    
+
+<!-- Processing Code-->
 
 <script id="script1" type="text/javascript">
 
