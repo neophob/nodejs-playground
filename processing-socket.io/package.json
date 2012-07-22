@@ -1,0 +1,16 @@
+{
+	"name": "processingjs-socket.io-example",
+	"version": "0.1.0",
+	"author": "Michael Vogt <michu@neophob.com>",
+	"description": "use processing.js and node.js",
+
+	"dependencies" : {
+    		"socket.io"   : "0.9.5",
+		"node-static" : "0.6.0" 
+    },
+
+    "engine": {
+    	"node": ">=0.8"
+  	}
+
+}
