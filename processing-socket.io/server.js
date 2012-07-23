@@ -18,9 +18,25 @@ var server = http.createServer(function(request, response){
 
 var newDataEmitter = new events.EventEmitter();
 
-function getHistoryAareData() { 
-	//TODO
+function getHistoryAareData() { 	
+	var req = http.request({ host: 'aare.schwumm.ch', path: '/api/archive' }, function(res) {
+		var body = '';
+  		res.setEncoding('utf8');
+  		res.on('data', function (chunk) {
+    		body += chunk;
+    		//console.log(body);
+  		});
+	    res.on('end', function() {
+      		var aareData = JSON.parse(body);
+      		//TODO
+    	});
+	});
+	req.on('error', function(e) {
+  		console.log('problem with request: ' + e.message);
+	});
+	req.end();	
 }
+
 
 function getCurrentAareData() { 
 	var req = http.request({ host: 'aare.schwumm.ch', path: '/aare.json' }, function(res) {
@@ -42,7 +58,8 @@ function getCurrentAareData() {
 	});
 	req.end();	
 }
-setInterval(getCurrentAareData, 1000);
+//setInterval(getCurrentAareData, 1000);
+setInterval(getHistoryAareData, 1000);
 
 // use socket.io
 var io = require('socket.io').listen(server);
