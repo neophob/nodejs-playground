@@ -84,7 +84,7 @@ function sketchProc(processing) {
           history[i-1] = history[i];
         }
 
-        history[MAX_VALUES-1] = data.temp*BAR_Y_SIZE;
+        history[MAX_VALUES-1] = data.temp;
     });
 
     processing.setup = function() {
@@ -115,7 +115,7 @@ function sketchProc(processing) {
       for (var i = 0; i < history.length; i++) {
         processing.rect(xofs, 310, BAR_X_SIZE-1, 0-history[i]);
 
-        var ii=parseInt(history[i]/10);
+        var ii=parseInt(history[i]);
         processing.text(""+ii, xofs, 320, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
