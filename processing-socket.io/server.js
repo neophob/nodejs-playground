@@ -2,9 +2,9 @@
 var http = require('http');
 var util = require('util');
 var spawn = require("child_process").spawn;
-var static = require('node-static');
+var staticServ = require('node-static');
 var events = require('events');
-var file = new(static.Server)('./clientfiles/');
+var file = new(staticServ.Server)('./clientfiles/');
 var port = process.env.PORT || 8001;
 
 var server = http.createServer(function(request, response){
@@ -54,18 +54,22 @@ function getHistoryAareData() {
   });
 }
 
-
+var lastDate=0;
 function getCurrentAareData() { 
   getJsonData({ host: 'aare.schwumm.ch', path: '/aare.json' }, function(body) {  
     var aareData = JSON.parse(body);
-    if (aareData.temperature > 0) {  
+
+    //parse date
+    var newTimestamp  = new Date(Date.parse(aareData.date,"yyyy-MM-dd HH:mm:ss"));
+    if (aareData.temperature > 0 && newTimestamp>lastDate) {  
         console.log(util.inspect(aareData));
-        newDataEmitter.emit('bang', aareData);
+        newDataEmitter.emit('bang', aareData);        
+        lastDate = newTimestamp;        
     }  
   });
 }
-//setInterval(getCurrentAareData, 1000);
-setInterval(getHistoryAareData, 3000);
+setInterval(getCurrentAareData, 5000);
+//setInterval(getHistoryAareData, 3000);
 
 // use socket.io
 var io = require('socket.io').listen(server);
