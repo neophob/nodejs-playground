@@ -76,38 +76,41 @@
 // Simple way to attach js code to the canvas is by using a function
 function sketchProc(processing) {
     var col;
-    var history;
+    var historyTemp;
 
     var font;
-
-    var MAX_VALUES = 20;
+    var RES_X = 800;
+    var RES_Y = 400;
+    var MAX_VALUES = 40;
     var BAR_X_SIZE = 40;
     var BAR_Y_SIZE = 300;
+
+    var SCROLL_PER_PIXEL = (BAR_X_SIZE*MAX_VALUES-RES_X+BAR_X_SIZE)/RES_X;
 
     //get data from socket.io
     var socket = io.connect();
     socket.on('bang', function (data) {
-        console.log(data.temp);
+        console.log('get new data: '+data.date+' '+data.temp);
 
-        for (var i = 1; i < history.length; i++) {
-          history[i-1] = history[i];
+        for (var i = 1; i < historyTemp.length; i++) {
+          historyTemp[i-1] = historyTemp[i];
         }
 
-        history[MAX_VALUES-1] = data.temp;
+        historyTemp[MAX_VALUES-1] = data.temp;
     });
 
     processing.setup = function() {
       // erase background
-      processing.size(800, 400);      
+      processing.size(RES_X, RES_Y);      
       col = processing.color(255, 255, 0);
 
       font = processing.loadFont("Thonburi.ttf"); 
       processing.textFont(font, 16); 
       processing.textAlign(processing.CENTER);
 
-      history = new Array(MAX_VALUES);
-      for (var i = 0; i < history.length; i++) {
-        history[i] = 0;
+      historyTemp = new Array(MAX_VALUES);
+      for (var i = 0; i < historyTemp.length; i++) {
+        historyTemp[i] = 0;
       }
     }
 
@@ -120,10 +123,10 @@ function sketchProc(processing) {
       processing.fill(col);
       processing.noStroke();
 
-      var xofs=0;
-      for (var i = 0; i < history.length; i++) {
-        processing.rect(xofs, 310, BAR_X_SIZE-1, 0-history[i]*10);
-        processing.text(history[i].toFixed(1), xofs, 320, BAR_X_SIZE, 30);
+      var xofs=0-processing.mouseX*SCROLL_PER_PIXEL;
+      for (var i = 0; i < historyTemp.length; i++) {
+        processing.rect(xofs, 310, BAR_X_SIZE-1, 0-historyTemp[i]*10);
+        processing.text(historyTemp[i].toFixed(1), xofs, 320, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
       }

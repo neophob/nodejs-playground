@@ -1,3 +1,4 @@
+//TODO cach date and temp values
 
 var http = require('http');
 var util = require('util');
@@ -37,7 +38,8 @@ function getJsonData(option, callback) {
 }
 
 //TODO make async function to get json data, handle response in a callback
-function getHistoryAareData() { 	
+function getHistoryAareData() {
+  console.log('fetch initial data');
   getJsonData({ host: 'aare.schwumm.ch', path: '/api/archive' }, function(body) {
     var aareData = JSON.parse(body);
 
@@ -46,11 +48,12 @@ function getHistoryAareData() {
 
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
-         var sendData = {'temperature': values[i], 'date': date[i]};
+         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))};
          console.log(sendData);
          newDataEmitter.emit('bang', sendData);
        }            
     }
+    console.log('initial data fetch complete...');
   });
 }
 
@@ -61,15 +64,20 @@ function getCurrentAareData() {
 
     //parse date
     var newTimestamp  = new Date(Date.parse(aareData.date,"yyyy-MM-dd HH:mm:ss"));
-    if (aareData.temperature > 0 && newTimestamp>lastDate) {  
-        console.log(util.inspect(aareData));
-        newDataEmitter.emit('bang', aareData);        
+    if (aareData.temperature > 0 && newTimestamp>lastDate) {          
+        var sendData = {'temperature': aareData.temperature, 'date': newTimestamp};
+        console.log(sendData);
+        newDataEmitter.emit('bang', sendData);        
         lastDate = newTimestamp;        
     }  
   });
 }
-setInterval(getCurrentAareData, 5000);
-//setInterval(getHistoryAareData, 3000);
+
+//get initial data
+//setTimeout(getHistoryAareData(), 1000);
+//get up to date data
+setInterval(getCurrentAareData, 6000);
+
 
 // use socket.io
 var io = require('socket.io').listen(server);
@@ -81,8 +89,10 @@ io.set('log level', 2);
 io.sockets.on('connection', function(socket){   	   
     console.log('socket connection!');
 
+    getHistoryAareData();
+
     newDataEmitter.addListener('bang', function (aareData) {
-    	socket.emit('bang', {'temp': aareData.temperature });	
+    	socket.emit('bang', {'temp': aareData.temperature, 'date': aareData.date });	
 	});
 
 	socket.on('disconnect', function () {
