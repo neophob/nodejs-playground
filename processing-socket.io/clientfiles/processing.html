@@ -78,6 +78,12 @@ function sketchProc(processing) {
     
     var RES_X = 1024;
     var RES_Y = 400;
+
+    var FPS = 20;
+
+    var FONTNAME = 'SWANSE__.TTF'; //"Thonburi.ttf"
+    var FONTSIZE = 14;
+
     var MAX_VALUES = 128;
     var BAR_X_SIZE = 40;
     var BAR_Y_SIZE = 300;
@@ -90,7 +96,7 @@ function sketchProc(processing) {
     var font;
     var colDate;
 
-    //get data from socket.io
+    // -- get data from socket.io --
     var socket = io.connect();
     socket.on('bang', function (data) {
         console.log('get new data: '+data.date+' '+data.temp);
@@ -104,13 +110,15 @@ function sketchProc(processing) {
         historyDate[MAX_VALUES-1] = data.date;
     });
 
+    // -- setup --
     processing.setup = function() {
       // erase background
-      processing.size(RES_X, RES_Y);            
+      processing.size(RES_X, RES_Y);
+      processing.frameRate(FPS);
       colDate = processing.color(51, 51, 51);
 
-      font = processing.loadFont("Thonburi.ttf"); 
-      processing.textFont(font, 14); 
+      font = processing.loadFont(FONTNAME); 
+      processing.textFont(font, FONTSIZE); 
       processing.textAlign(processing.CENTER);
 
       historyTemp = new Array(MAX_VALUES);
@@ -121,7 +129,7 @@ function sketchProc(processing) {
       }
     }
 
-    // Override draw function, by default it will be called 60 times per second
+    // -- main loop --
     processing.draw = function() {
       // determine center and max clock arm length
       //var centerX = processing.width / 2, centerY = processing.height / 2;
@@ -131,7 +139,9 @@ function sketchProc(processing) {
       var xofs=BAR_X_SIZE/2-processing.mouseX*SCROLL_PER_PIXEL;
       for (var i = 0; i < MAX_VALUES; i++) {
         var currentTemp = historyTemp[i];
-
+        if (currentTemp<1) {
+          break;
+        }
         var tempColor = 255*currentTemp/25;
         processing.fill(processing.color(0, 140, tempColor));
 
