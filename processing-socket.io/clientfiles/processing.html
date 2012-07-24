@@ -77,11 +77,12 @@
 function sketchProc(processing) {
     var col;
     var historyTemp;
+    var historyDate;
 
     var font;
-    var RES_X = 800;
+    var RES_X = 1024;
     var RES_Y = 400;
-    var MAX_VALUES = 40;
+    var MAX_VALUES = 128;
     var BAR_X_SIZE = 40;
     var BAR_Y_SIZE = 300;
 
@@ -92,11 +93,13 @@ function sketchProc(processing) {
     socket.on('bang', function (data) {
         console.log('get new data: '+data.date+' '+data.temp);
 
-        for (var i = 1; i < historyTemp.length; i++) {
+        for (var i = 1; i < MAX_VALUES; i++) {
           historyTemp[i-1] = historyTemp[i];
+          historyDate[i-1] = historyDate[i];
         }
 
         historyTemp[MAX_VALUES-1] = data.temp;
+        historyDate[MAX_VALUES-1] = data.date;
     });
 
     processing.setup = function() {
@@ -105,12 +108,14 @@ function sketchProc(processing) {
       col = processing.color(255, 255, 0);
 
       font = processing.loadFont("Thonburi.ttf"); 
-      processing.textFont(font, 16); 
+      processing.textFont(font, 14); 
       processing.textAlign(processing.CENTER);
 
       historyTemp = new Array(MAX_VALUES);
-      for (var i = 0; i < historyTemp.length; i++) {
+      historyDate = new Array(MAX_VALUES);
+      for (var i = 0; i < MAX_VALUES; i++) {
         historyTemp[i] = 0;
+        historyDate[i] = 0;
       }
     }
 
@@ -124,9 +129,14 @@ function sketchProc(processing) {
       processing.noStroke();
 
       var xofs=0-processing.mouseX*SCROLL_PER_PIXEL;
-      for (var i = 0; i < historyTemp.length; i++) {
+      for (var i = 0; i < MAX_VALUES; i++) {
         processing.rect(xofs, 310, BAR_X_SIZE-1, 0-historyTemp[i]*10);
-        processing.text(historyTemp[i].toFixed(1), xofs, 320, BAR_X_SIZE, 30);
+        var tmp = historyTemp[i].toFixed(1)+'°';
+        processing.text(tmp, xofs, 320, BAR_X_SIZE, 30);
+
+        var dte = new Date(historyDate[i]);
+        tmp = dte.getHours() + ':' + dte.getMinutes();
+        processing.text(tmp, xofs, 340, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
       }
