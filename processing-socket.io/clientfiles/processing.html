@@ -142,11 +142,12 @@ function sketchProc(processing) {
         if (currentTemp<1) {
           break;
         }
-        var tempColor = 255*currentTemp/25;
-        processing.fill(processing.color(0, 140, tempColor));
+
+        processing.fill(processing.color(0, 140, 200));
 
         //write bar
-        processing.rect(xofs+1, 310, BAR_X_SIZE-2, 0-historyTemp[i]*12);
+        var barY = historyTemp[i]*12;
+        processing.rect(xofs+1, 310, BAR_X_SIZE-2, 0-barY);
 
         //write date
         processing.fill(colDate);
@@ -157,6 +158,8 @@ function sketchProc(processing) {
         //write temp
         var tmp = historyTemp[i].toFixed(1)+'°';
         processing.text(tmp, xofs, 290, BAR_X_SIZE, 30);
+
+        processing.rect(xofs+1, 0, BAR_X_SIZE-2, (310-barY)-2);
 
         xofs += BAR_X_SIZE;
       }
