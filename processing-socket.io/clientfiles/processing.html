@@ -114,7 +114,7 @@ function sketchProc(processing) {
       var xofs=0;
       for (var i = 0; i < history.length; i++) {
         processing.rect(xofs, 310, BAR_X_SIZE-1, 0-history[i]*10);
-        processing.text(history[i], xofs, 320, BAR_X_SIZE, 30);
+        processing.text(history[i].toFixed(1), xofs, 320, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
       }

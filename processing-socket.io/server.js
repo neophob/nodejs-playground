@@ -18,6 +18,7 @@ var server = http.createServer(function(request, response){
 
 var newDataEmitter = new events.EventEmitter();
 
+//TODO make async function to get json data, handle response in a callback
 function getHistoryAareData() { 	
 	var req = http.request({ host: 'aare.schwumm.ch', path: '/api/archive' }, function(res) {
 		var body = '';
@@ -28,6 +29,17 @@ function getHistoryAareData() {
   		});
 	    res.on('end', function() {
       		var aareData = JSON.parse(body);
+
+          var date = aareData.data.datetime;
+          var values = aareData.data.temperature;
+
+          for(var i = 0; i < date.length; i++) {
+            if (date[i] !== null && values[i] !== null) {
+              var sendData = {'temperature': values[i], 'date': date[i]};
+              console.log(sendData);
+              newDataEmitter.emit('bang', sendData);
+            }            
+          }
       		//TODO
     	});
 	});
@@ -46,6 +58,7 @@ function getCurrentAareData() {
     		body += chunk;
   		});
 	    res.on('end', function() {
+          console.log(body);
       		var aareData = JSON.parse(body);
             if (aareData.temperature > 0) {  
                 console.log(util.inspect(aareData));
@@ -59,7 +72,7 @@ function getCurrentAareData() {
 	req.end();	
 }
 //setInterval(getCurrentAareData, 1000);
-setInterval(getHistoryAareData, 1000);
+setInterval(getHistoryAareData, 3000);
 
 // use socket.io
 var io = require('socket.io').listen(server);
