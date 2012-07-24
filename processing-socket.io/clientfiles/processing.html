@@ -75,11 +75,7 @@
 
 // Simple way to attach js code to the canvas is by using a function
 function sketchProc(processing) {
-    var col;
-    var historyTemp;
-    var historyDate;
-
-    var font;
+    
     var RES_X = 1024;
     var RES_Y = 400;
     var MAX_VALUES = 128;
@@ -87,6 +83,12 @@ function sketchProc(processing) {
     var BAR_Y_SIZE = 300;
 
     var SCROLL_PER_PIXEL = (BAR_X_SIZE*MAX_VALUES-RES_X+BAR_X_SIZE)/RES_X;
+
+    var historyTemp;
+    var historyDate;
+
+    var font;
+    var colDate;
 
     //get data from socket.io
     var socket = io.connect();
@@ -104,8 +106,8 @@ function sketchProc(processing) {
 
     processing.setup = function() {
       // erase background
-      processing.size(RES_X, RES_Y);      
-      col = processing.color(255, 255, 0);
+      processing.size(RES_X, RES_Y);            
+      colDate = processing.color(51, 51, 51);
 
       font = processing.loadFont("Thonburi.ttf"); 
       processing.textFont(font, 14); 
@@ -123,20 +125,28 @@ function sketchProc(processing) {
     processing.draw = function() {
       // determine center and max clock arm length
       //var centerX = processing.width / 2, centerY = processing.height / 2;
-      processing.background(0);
-
-      processing.fill(col);
+      processing.background(238);
       processing.noStroke();
 
-      var xofs=0-processing.mouseX*SCROLL_PER_PIXEL;
+      var xofs=BAR_X_SIZE/2-processing.mouseX*SCROLL_PER_PIXEL;
       for (var i = 0; i < MAX_VALUES; i++) {
-        processing.rect(xofs, 310, BAR_X_SIZE-1, 0-historyTemp[i]*10);
-        var tmp = historyTemp[i].toFixed(1)+'°';
-        processing.text(tmp, xofs, 320, BAR_X_SIZE, 30);
+        var currentTemp = historyTemp[i];
 
+        var tempColor = 255*currentTemp/25;
+        processing.fill(processing.color(0, 140, tempColor));
+
+        //write bar
+        processing.rect(xofs+1, 310, BAR_X_SIZE-2, 0-historyTemp[i]*12);
+
+        //write date
+        processing.fill(colDate);
         var dte = new Date(historyDate[i]);
         tmp = dte.getHours() + ':' + dte.getMinutes();
         processing.text(tmp, xofs, 340, BAR_X_SIZE, 30);
+
+        //write temp
+        var tmp = historyTemp[i].toFixed(1)+'°';
+        processing.text(tmp, xofs, 290, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
       }
