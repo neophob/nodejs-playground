@@ -152,19 +152,23 @@ function sketchProc(processing) {
         //write date
         processing.fill(colDate);
         var dte = new Date(historyDate[i]);
-        tmp = dte.getHours() + ':' + dte.getMinutes();
+        var tmp = dte.getHours() +':'+ ((dte.getMinutes() < 10) ? '0' : '') + dte.getMinutes();
+
         processing.text(tmp, xofs, 340, BAR_X_SIZE, 30);
 
         //write temp
-        var tmp = historyTemp[i].toFixed(1)+'°';
+        tmp = historyTemp[i].toFixed(1)+'°';
         processing.text(tmp, xofs, 290, BAR_X_SIZE, 30);
 
+        //draw the dark bar on the top
         processing.rect(xofs+1, 0, BAR_X_SIZE-2, (310-barY)-2);
 
         xofs += BAR_X_SIZE;
       }
 
     }; 
+
+
 }
 
 var canvas = document.getElementById("canvas1");
