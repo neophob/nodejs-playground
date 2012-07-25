@@ -79,7 +79,7 @@ function sketchProc(processing) {
     var RES_X = 1024;
     var RES_Y = 400;
 
-    var FPS = 20;
+    var FPS = 25;
 
     var FONTNAME = 'SWANSE__.TTF'; //"Thonburi.ttf"
     var FONTSIZE = 14;
@@ -140,7 +140,7 @@ function sketchProc(processing) {
       for (var i = 0; i < MAX_VALUES; i++) {
         var currentTemp = historyTemp[i];
         if (currentTemp<1) {
-          break;
+          return;
         }
 
         processing.fill(processing.color(0, 140, 200));
@@ -160,11 +160,10 @@ function sketchProc(processing) {
         tmp = historyTemp[i].toFixed(1)+'°';
         processing.text(tmp, xofs, 290, BAR_X_SIZE, 30);
 
-        //draw the dark bar on the top
-        processing.rect(xofs+1, 0, BAR_X_SIZE-2, (310-barY)-2);
-
         xofs += BAR_X_SIZE;
       }
+
+      processing.rect(processing.mouseX-BAR_X_SIZE/2, 0, BAR_X_SIZE, 20);
 
     }; 
 
