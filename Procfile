@@ -1,2 +1,2 @@
-web: node server.js
-worker: node server.js
+web: node aaretemp/server.js
+worker: node aaretemp/server.js
