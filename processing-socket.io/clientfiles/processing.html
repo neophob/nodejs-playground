@@ -135,8 +135,14 @@ function sketchProc(processing) {
       //var centerX = processing.width / 2, centerY = processing.height / 2;
       processing.background(238);
       processing.noStroke();
-
+      
       var xofs=BAR_X_SIZE/2-processing.mouseX*SCROLL_PER_PIXEL;
+
+      //TODO calc the start point, ignore non visible parts
+      var xPosStart = processing.mouseX;
+      var xPosEnd = processing.mouseX+RES_X-200;
+//      console.log('visible range starts at '+xPosStart+' ends at '+xPosEnd+'. cal i: '+processing.mouseX/xofs*SCROLL_PER_PIXEL);
+
       for (var i = 0; i < MAX_VALUES; i++) {
         var currentTemp = historyTemp[i];
         if (currentTemp<1) {
@@ -161,8 +167,12 @@ function sketchProc(processing) {
         processing.text(tmp, xofs, 290, BAR_X_SIZE, 30);
 
         xofs += BAR_X_SIZE;
-      }
 
+        //do not draw parts, which are not visible
+        if (xofs > xPosEnd) {
+          break;
+        }
+      }
       processing.rect(processing.mouseX-BAR_X_SIZE/2, 0, BAR_X_SIZE, 20);
 
     }; 
