@@ -94,7 +94,7 @@ function sketchProc(processing) {
     var historyDate;
 
     var font;
-    var colDate;
+    var colDate, colBlue;
 
     // -- get data from socket.io --
     var socket = io.connect();
@@ -116,6 +116,7 @@ function sketchProc(processing) {
       processing.size(RES_X, RES_Y);
       processing.frameRate(FPS);
       colDate = processing.color(51, 51, 51);
+      colBlue = processing.color(0, 140, 200);
 
       font = processing.loadFont(FONTNAME); 
       processing.textFont(font, FONTSIZE); 
@@ -140,7 +141,7 @@ function sketchProc(processing) {
 
       //TODO calc the start point, ignore non visible parts
       var xPosStart = processing.mouseX;
-      var xPosEnd = processing.mouseX+RES_X-200;
+      var xPosEnd = processing.mouseX+RES_X;
 //      console.log('visible range starts at '+xPosStart+' ends at '+xPosEnd+'. cal i: '+processing.mouseX/xofs*SCROLL_PER_PIXEL);
 
       for (var i = 0; i < MAX_VALUES; i++) {
@@ -149,7 +150,7 @@ function sketchProc(processing) {
           return;
         }
 
-        processing.fill(processing.color(0, 140, 200));
+        processing.fill(colBlue);
 
         //write bar
         var barY = historyTemp[i]*12;
@@ -173,6 +174,9 @@ function sketchProc(processing) {
           break;
         }
       }
+      processing.rect(0, 0, RES_X, 20);
+
+      processing.fill(colBlue);
       processing.rect(processing.mouseX-BAR_X_SIZE/2, 0, BAR_X_SIZE, 20);
 
     }; 
