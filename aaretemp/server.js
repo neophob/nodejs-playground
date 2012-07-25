@@ -5,7 +5,7 @@ var util = require('util');
 var spawn = require("child_process").spawn;
 var staticServ = require('node-static');
 var events = require('events');
-var file = new(staticServ.Server)('./clientfiles/');
+var file = new(staticServ.Server)('./aaretemp//clientfiles/');
 var port = process.env.PORT || 8001;
 
 var server = http.createServer(function(request, response){
