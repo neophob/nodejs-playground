@@ -53,7 +53,11 @@ function getHistoryAareData() {
 
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
-         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss+02:00"))};
+         var newTimestamp  = new Date(Date.parse(date[i],"yyyy-MM-dd HH:mm:ss"));                 
+         newTimestamp.setTime(newTimestamp.getTime() + 2*60*60*1000);         
+
+         var sendData = {'temperature': values[i], 'date': newTimestamp.toUTCString()};
+//         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))}; 
          //Remove the first item of an array
          cache.shift();
          //Add a new item to an array at the end
@@ -89,8 +93,10 @@ function getCurrentAareData() {
 
     //parse date
     var newTimestamp  = new Date(Date.parse(aareData.date,"yyyy-MM-dd HH:mm:ss"));
+    newTimestamp.setTime(newTimestamp.getTime() + 2*60*60*1000);
+    
     if (aareData.temperature > 0 && newTimestamp>lastDate) {          
-        var sendData = {'temperature': aareData.temperature, 'date': newTimestamp};
+        var sendData = {'temperature': aareData.temperature, 'date': newTimestamp.toUTCString()};
         newDataEmitter.emit('bang', sendData);
 
         //update cache
