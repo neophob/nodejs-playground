@@ -53,7 +53,7 @@ function getHistoryAareData() {
 
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
-         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))};
+         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss+02:00"))};
          //Remove the first item of an array
          cache.shift();
          //Add a new item to an array at the end
