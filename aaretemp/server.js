@@ -1,6 +1,5 @@
 //TODO 
 // - use timezone to parse date
-// - append current value to cache
 
 var http = require('http');
 var util = require('util');
@@ -113,7 +112,6 @@ getHistoryAareData();
 //get up to date data
 setInterval(getCurrentAareData, 6000);
 
-
 // use socket.io
 var io = require('socket.io').listen(server);
 
@@ -127,8 +125,8 @@ io.sockets.on('connection', function(socket){
     sendCacheToClient(socket);
 
     newDataEmitter.addListener('bang', function (aareData) {
-      //console.log('socketsend '+JSON.stringify(aareData));
-    	socket.emit('bang', {'temp': aareData.temperature, 'date': aareData.date });	
+    //console.log('socketsend '+JSON.stringify(aareData));
+    socket.emit('bang', {'temp': aareData.temperature, 'date': aareData.date });	
 	});
 
 	socket.on('disconnect', function () {
