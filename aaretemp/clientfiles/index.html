@@ -110,11 +110,13 @@ function sketchProc(processing) {
     socket.on('bang', function (data) {
         console.log('get new data: '+data.date+' '+data.temp);
 
+        //shift array left
         for (var i = 1; i < MAX_VALUES; i++) {
           historyTemp[i-1] = historyTemp[i];
           historyDate[i-1] = historyDate[i];
         }
 
+        //add new data at the end
         historyTemp[MAX_VALUES-1] = data.temp;
         historyDate[MAX_VALUES-1] = data.date;
     });
@@ -155,9 +157,6 @@ function sketchProc(processing) {
 
       for (var i = 0; i < MAX_VALUES; i++) {
         var currentTemp = historyTemp[i];
-        if (currentTemp<1) {
-          return;
-        }
 
         processing.fill(colBlue);
 
