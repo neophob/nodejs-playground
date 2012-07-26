@@ -52,11 +52,9 @@ function getHistoryAareData() {
     var date = aareData.data.datetime;
     var values = aareData.data.temperature;
 
-    var cnt=0;
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
          var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))};
-         //cache[cnt++] = sendData;
          //Remove the first item of an array
          cache.shift();
          //Add a new item to an array at the end
