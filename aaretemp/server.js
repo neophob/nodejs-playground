@@ -1,5 +1,4 @@
 //TODO 
-// - implement cache limit
 // - use timezone to parse date
 // - append current value to cache
 
@@ -40,7 +39,7 @@ function getJsonData(option, callback) {
   req.end();  
 }
 
-var cache = new Array();
+var cache = new Array(MAX_CACHE_ELEMENTS);
 
 /*
  * fill internal cache with data from the last day
@@ -57,8 +56,11 @@ function getHistoryAareData() {
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
          var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))};
-         //console.log(sendData);
-         cache[cnt++] = sendData;
+         //cache[cnt++] = sendData;
+         //Remove the first item of an array
+         cache.shift();
+         //Add a new item to an array at the end
+         cache.push(sendData);
        }            
     }
     console.log('initial data fetch complete, found '+cache.length+' entries');
@@ -93,6 +95,11 @@ function getCurrentAareData() {
     if (aareData.temperature > 0 && newTimestamp>lastDate) {          
         var sendData = {'temperature': aareData.temperature, 'date': newTimestamp};
         newDataEmitter.emit('bang', sendData);
+
+        //update cache
+        cache.shift();        
+        cache.push(sendData);
+
         console.log('new data found: '+JSON.stringify(sendData.date));
         lastDate = newTimestamp;
 

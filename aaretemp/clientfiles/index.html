@@ -111,14 +111,12 @@ function sketchProc(processing) {
         console.log('get new data: '+data.date+' '+data.temp);
 
         //shift array left
-        for (var i = 1; i < MAX_VALUES; i++) {
-          historyTemp[i-1] = historyTemp[i];
-          historyDate[i-1] = historyDate[i];
-        }
+        historyTemp.shift();
+        historyDate.shift();
 
         //add new data at the end
-        historyTemp[MAX_VALUES-1] = data.temp;
-        historyDate[MAX_VALUES-1] = data.date;
+        historyTemp.push(data.temp);
+        historyDate.push(data.date);
     });
 
     // -- setup --
@@ -133,6 +131,7 @@ function sketchProc(processing) {
       processing.textFont(font, FONTSIZE); 
       processing.textAlign(processing.CENTER);
 
+      //init array
       historyTemp = new Array(MAX_VALUES);
       historyDate = new Array(MAX_VALUES);
       for (var i = 0; i < MAX_VALUES; i++) {
