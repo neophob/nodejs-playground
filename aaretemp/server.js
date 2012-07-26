@@ -1,4 +1,7 @@
-//TODO cach date and temp values
+//TODO 
+// - implement cache limit
+// - use timezone to parse date
+// - append current value to cache
 
 var http = require('http');
 var util = require('util');
@@ -53,10 +56,8 @@ function getHistoryAareData() {
     var cnt=0;
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
-         //parse data from string, its GMT+1
          var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))};
-         console.log(sendData);
-         //newDataEmitter.emit('bang', sendData);
+         //console.log(sendData);
          cache[cnt++] = sendData;
        }            
     }
@@ -71,8 +72,6 @@ function getHistoryAareData() {
 function sendCacheToClient(socket) {
   console.log('send cache data to client, entries: '+cache.length);
   for(var i = 0; i < cache.length; i++) {
-    //var sendData = {'temperature': cache[i].temperature, 'date': cache[i].date}    
-    //newDataEmitter.emit('bang', sendData);
     socket.emit('bang', {'temp': cache[i].temperature, 'date': cache[i].date });
   }
   console.log('cache sent');
@@ -128,8 +127,7 @@ io.sockets.on('connection', function(socket){
 	});
 
 	socket.on('disconnect', function () {
-		console.log('socket disconnected');
-    socket
+		console.log('socket disconnected');    
 	});
 }); 
   
