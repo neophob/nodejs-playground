@@ -38,6 +38,16 @@ function getJsonData(option, callback) {
   req.end();  
 }
 
+/*
+ * convert the string "2012-07-27 08:00:00" into a date object
+ */
+function parseDate(date) {
+  //data source is rinning in GMT+02:00
+  var newTimestamp  = new Date(Date.parse(date+' GMT+02:00','yyyy-MM-dd HH:mm:ss'));
+  //newTimestamp.setTime(newTimestamp.getTime() + 2*60*60*1000);
+  return newTimestamp.toUTCString();
+}
+
 var cache = new Array(MAX_CACHE_ELEMENTS);
 
 /*
@@ -53,11 +63,8 @@ function getHistoryAareData() {
 
     for(var i = 0; i < date.length; i++) {
        if (date[i] !== null && values[i] !== null) {
-         var newTimestamp  = new Date(Date.parse(date[i],"yyyy-MM-dd HH:mm:ss"));                 
-         newTimestamp.setTime(newTimestamp.getTime() + 2*60*60*1000);         
 
-         var sendData = {'temperature': values[i], 'date': newTimestamp.toUTCString()};
-//         var sendData = {'temperature': values[i], 'date': new Date(Date.parse(date[i], "yyyy-MM-dd HH:mm:ss"))}; 
+         var sendData = {'temperature': values[i], 'date': parseDate(date[i])};
          //Remove the first item of an array
          cache.shift();
          //Add a new item to an array at the end
@@ -91,12 +98,8 @@ function getCurrentAareData() {
   getJsonData({ host: 'aare.schwumm.ch', path: '/aare.json' }, function(body) {  
     var aareData = JSON.parse(body);
 
-    //parse date
-    var newTimestamp  = new Date(Date.parse(aareData.date,"yyyy-MM-dd HH:mm:ss"));
-    newTimestamp.setTime(newTimestamp.getTime() + 2*60*60*1000);
-    
-    if (aareData.temperature > 0 && newTimestamp>lastDate) {          
-        var sendData = {'temperature': aareData.temperature, 'date': newTimestamp.toUTCString()};
+    if (aareData.temperature > 0 && aareData.date>lastDate) {          
+        var sendData = {'temperature': aareData.temperature, 'date': parseDate(aareData.date)};
         newDataEmitter.emit('bang', sendData);
 
         //update cache
@@ -104,7 +107,7 @@ function getCurrentAareData() {
         cache.push(sendData);
 
         console.log('new data found: '+JSON.stringify(sendData.date));
-        lastDate = newTimestamp;
+        lastDate = aareData.date;
 
         //TODO store into cache
     }  
